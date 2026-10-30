@@ -2,26 +2,27 @@
 
 **Evidence-first AI-assisted bug repair.**
 
-ProofPatch AI is a software repair project designed to reproduce a reported Python failure, request a minimal proposed patch from an AI model, validate the patch, and independently run the defined tests against the patched code.
-
-The goal is to make repair decisions traceable to evidence rather than presenting an AI-generated suggestion as automatically correct.
+ProofPatch AI reproduces a reported Python failure, requests a minimal proposed patch from an AI model, validates the patch, and independently runs defined tests against the patched code.
 
 ## Current status
 
-The project is under active development.
-
-Implemented components include:
+Implemented components:
 - Python bug reproduction using pytest in a temporary directory.
 - Unified-diff validation and in-memory patch application.
 - Evidence-informed repair prompts and model-response parsing.
 - Independent verification against defined tests.
-- An orchestration workflow that connects these steps.
-- A FastAPI health endpoint.
-- Automated tests for the repair components.
+- Workflow orchestration.
+- FastAPI health and local repair endpoints.
+- Automated tests for repair components and API behavior.
 
-The HTTP API currently exposes `GET /health`. A public repair endpoint and end-to-end production integration are not yet implemented.
+### Available API endpoints
 
-Live Meta model access depends on valid API credentials and account access. Mocked tests do not establish that a real Meta API request succeeds.
+- `GET /health` — checks API availability.
+- `POST /repair` — accepts Python source code and tests and invokes the repair workflow when explicitly enabled for trusted local development.
+
+The repair endpoint is disabled by default. Its reproduction and verification stages execute supplied Python code without a secure sandbox. It is not safe for public use or untrusted submissions.
+
+Live Meta model access remains unverified. Passing mocked tests does not establish that a real Meta API request succeeds.
 
 ## How it works
 
@@ -32,7 +33,7 @@ Live Meta model access depends on valid API credentials and account access. Mock
 5. Run the defined tests against the patched code.
 6. Return the observed result and evidence.
 
-A passing test suite means the patch passed the tests that were run. It does not prove universal correctness or eliminate all security risks.
+Passing defined tests does not prove universal correctness.
 
 ## Technology
 
@@ -61,14 +62,15 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-Create or update `backend/.env` using `backend/.env.example` as a reference. Never commit real credentials.
+Create `backend/.env` using `backend/.env.example` as a reference. Never commit real credentials.
 
-Current environment variable names:
-- `MODEL_API_KEY`
-- `META_MODEL`
-- `META_API_BASE_URL`
+Configuration:
+- `MODEL_API_KEY` — model API credential.
+- `META_MODEL` — model name; defaults to `muse-spark-1.3`.
+- `META_API_BASE_URL` — documented, but the current model client still uses a hardcoded base URL.
+- `PROOFPATCH_ENABLE_LOCAL_REPAIR` — set to `true` only for trusted local testing; otherwise repair remains disabled.
 
-Note: environment variables are documented for configuration, but not all are wired into the client and HTTP application yet. The current model client uses a hardcoded base URL.
+The application reads environment variables from its process. To load `.env` when starting Uvicorn, use `--env-file .env`.
 
 ## Run the backend
 
@@ -90,6 +92,8 @@ From the `backend` directory:
 python -m pytest -q
 ```
 
+The latest reported test run passed 28 tests.
+
 ## Frontend setup
 
 In a separate terminal:
@@ -102,13 +106,13 @@ npm run dev
 
 Open http://localhost:3000.
 
-The frontend is an evolving part of the project; do not assume every repair workflow is connected to it yet.
+The frontend is not yet connected to the repair workflow.
 
 ## Security warning
 
-The current Python reproduction and verification components execute code. Temporary directories are not a secure sandbox. Do not use this implementation to run untrusted code on a publicly accessible server.
+The current Python reproduction and verification components execute code. Temporary directories are not a secure sandbox. Do not expose the repair endpoint publicly or enable it for untrusted submissions.
 
-Before public deployment, add process isolation, resource limits, network restrictions, authentication, rate limiting, and appropriate operational monitoring.
+Before public deployment, add process isolation, resource limits, network restrictions, authentication, rate limiting, and operational monitoring.
 
 ## Documentation
 
