@@ -110,6 +110,6 @@ When the backend is running, visit `/docs` for FastAPI's generated API documenta
 - The repair endpoint is disabled by default.
 - Code execution is not isolated in a secure sandbox.
 - Authentication and rate limiting are not implemented.
-- The model client's base URL is currently hardcoded.
+- The model name and API base URL are configurable through `META_MODEL` and `META_API_BASE_URL`.
 - Live Meta API integration has not yet been verified.
 - The frontend is not yet connected to the repair workflow.

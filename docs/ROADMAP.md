@@ -15,8 +15,8 @@ This roadmap describes planned work and current implementation status. Prioritie
 ## Phase 2 — Model integration
 
 - [ ] Resolve Meta API account, billing, and credential access.
-- [ ] Make model base URL and model selection consistently configurable.
-- [ ] Add safe, mocked client tests for API errors and malformed responses.
+- [x] Make model base URL and model selection consistently configurable.
+- [x] Add safe, mocked client tests for API errors and malformed responses.
 - [ ] Perform a real integration test when access is available.
 - [ ] Document supported model and endpoint behavior based on verified requests.
 

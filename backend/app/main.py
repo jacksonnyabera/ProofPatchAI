@@ -66,9 +66,13 @@ def repair(request: RepairRequest):
 
     try:
         client = MetaModelClient(
-            api_key=api_key,
-            model=os.getenv("META_MODEL", "muse-spark-1.3"),
-        )
+             api_key=api_key,
+             model=os.getenv("META_MODEL", "muse-spark-1.3"),
+             base_url=os.getenv(
+                 "META_API_BASE_URL",
+                 "https://api.meta.ai/v1",
+          ),
+       )
 
         return run_repair_workflow(
             client=client,

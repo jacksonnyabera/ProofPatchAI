@@ -67,7 +67,7 @@ Create `backend/.env` using `backend/.env.example` as a reference. Never commit 
 Configuration:
 - `MODEL_API_KEY` — model API credential.
 - `META_MODEL` — model name; defaults to `muse-spark-1.3`.
-- `META_API_BASE_URL` — documented, but the current model client still uses a hardcoded base URL.
+- `META_API_BASE_URL` — Meta API base URL; defaults to `https://api.meta.ai/v1`.
 - `PROOFPATCH_ENABLE_LOCAL_REPAIR` — set to `true` only for trusted local testing; otherwise repair remains disabled.
 
 The application reads environment variables from its process. To load `.env` when starting Uvicorn, use `--env-file .env`.
